@@ -1,0 +1,102 @@
+// Half wave controlled rectifier with Arduino (SCR controller with Arduino)
+
+#define pot A0
+
+
+const int T1 = 13, T2=12, T3=11, T4 = 10, T5=9, T6= 8, zcR=3, zcS=1, zcT=0;      // pin yang digunakan untuk Signal
+long sblum1 = 0;   long interval1 = 10000;  long sblum1b = 0;
+long sblum2 = 0;   long interval2 = 10000;  long sblum2b = 0;
+long sblum3 = 0;   long interval3 = 10000;  long sblum3b = 0;
+int val1 =0;       int val2 =0;   int val3 =0;
+uint16_t alpha =0;
+void setup(void) {
+ // Serial.begin(9600);
+  // set pin digital sebagai output dan input
+  pinMode(T1, OUTPUT); 
+  pinMode(T2, OUTPUT);
+  pinMode(T3, OUTPUT); 
+  pinMode(T4, OUTPUT); 
+  pinMode(T5, OUTPUT); 
+  pinMode(T6, OUTPUT);
+  pinMode(zcR, INPUT);
+  pinMode(zcS, INPUT); 
+  pinMode(zcT, INPUT); 
+}
+ 
+
+void loop ()
+{
+
+  val1 = digitalRead(zcR);     // read the input pin
+  val2 = digitalRead(zcS);     // read the input pin
+  val3 = digitalRead(zcT);     // read the input pin 
+   //alpha = analogRead(pot) *10 ;
+   alpha = 512 * 8;
+ //  Serial.println(alpha);
+    if(alpha > 8333)
+      alpha = 8333;
+  
+if (val1 == 1)
+ {
+   unsigned long skrg1 = micros();
+    
+ if(skrg1 - sblum1 >= 0 + alpha && skrg1 - sblum1 <  1666 + alpha ) {digitalWrite(T1, HIGH);} // 30 - 40
+ if(skrg1 - sblum1 <  0 + alpha|| skrg1 - sblum1 >=  1666 + alpha)  {digitalWrite(T1, LOW); }
+ if(skrg1 - sblum1 > interval1) { sblum1 = skrg1; }      {digitalWrite(T2, LOW);}
+
+  
+ 
+ }
+ if (val1 == 0)
+  {
+   
+    unsigned long skrg1b = micros();
+    
+ if(skrg1b - sblum1b >= 0 + alpha && skrg1b - sblum1b <  1666 + alpha ) {digitalWrite(T2, HIGH);} // 30 - 40
+ if(skrg1b - sblum1b <  0 + alpha|| skrg1b - sblum1b >= 1666 + alpha)   {digitalWrite(T2, LOW); }
+ if(skrg1b - sblum1b > interval1) { sblum1b = skrg1b; }   {digitalWrite(T1, LOW);}  
+  }
+
+ if (val2 == 1)
+ {
+   unsigned long skrg2 = micros();
+    
+ 
+  if(skrg2 - sblum2 >= 0 + alpha && skrg2 - sblum2 <  1666 + alpha ) {digitalWrite(T3, HIGH);} // 120 -125
+  if(skrg2 - sblum2 <  0 + alpha|| skrg2 - sblum2  >= 1666 + alpha) {digitalWrite(T3, LOW); }
+  if(skrg2 - sblum2 > interval2) { sblum2 = skrg2; }  {digitalWrite(T4, LOW); }
+
+ }
+ if (val2 == 0)
+  {
+     
+     unsigned long skrg2b = micros();
+ 
+   if(skrg2b - sblum2b >= 0 + alpha && skrg2b - sblum2b <  1666 + alpha ) {digitalWrite(T4, HIGH);} // 120 -125
+  if(skrg2b - sblum2b <  0 + alpha|| skrg2b - sblum2b >= 1666 + alpha) {digitalWrite(T4, LOW); }
+  if(skrg2b - sblum2b > interval2) { sblum2b = skrg2b; }  {digitalWrite(T3, LOW);} 
+  }
+
+ if (val3 == 1)
+ {
+   unsigned long skrg3 = micros();
+    
+ 
+  if(skrg3 - sblum3 >= 0 + alpha && skrg3 - sblum3 <  1666 + alpha ) {digitalWrite(T5, HIGH);} // 30 - 40
+ if(skrg3 - sblum3 <  0 + alpha || skrg3 - sblum3 >= 1666 + alpha) {digitalWrite(T5, LOW); }
+    if(skrg3 - sblum3 > interval3) { sblum3 = skrg3; }  {digitalWrite(T6, LOW); }
+
+ }
+ if (val3 == 0)
+  {
+ 
+      unsigned long skrg3b = micros();
+    
+   if(skrg3b - sblum3b >= 0 + alpha && skrg3b - sblum3b <  1666 + alpha ) {digitalWrite(T6, HIGH);} // 30 - 40
+ if(skrg3b - sblum3b <  0 + alpha || skrg3b - sblum3b >= 1666 + alpha) {digitalWrite(T6, LOW); }
+    if(skrg3b - sblum3b > interval3) { sblum3b = skrg3b; }  {digitalWrite(T5, LOW); }
+
+  }
+ 
+  
+}
